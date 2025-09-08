@@ -1,0 +1,64 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "A"
+    },
+    {
+      "id": "B"
+    },
+    {
+      "id": "C"
+    },
+    {
+      "id": "D"
+    },
+    {
+      "id": "E"
+    }
+  ],
+  "links": [
+    {
+      "weight": 1,
+      "source": "A",
+      "target": "B"
+    },
+    {
+      "weight": 2,
+      "source": "B",
+      "target": "C"
+    },
+    {
+      "weight": 3,
+      "source": "C",
+      "target": "D"
+    },
+    {
+      "weight": 4,
+      "source": "D",
+      "target": "E"
+    },
+    {
+      "weight": 5,
+      "source": "E",
+      "target": "C"
+    },
+    {
+      "weight": 6,
+      "source": "C",
+      "target": "D"
+    },
+    {
+      "weight": 7,
+      "source": "D",
+      "target": "B"
+    },
+    {
+      "weight": 8,
+      "source": "B",
+      "target": "A"
+    }
+  ]
+}

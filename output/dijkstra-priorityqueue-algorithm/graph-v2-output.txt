@@ -1,0 +1,7 @@
+Chinese Postman Problem Solution:
+---------------------------------
+Algorithm: Dijkstra-PriorityQueue-Algorithm
+Total Cost: 37.0
+Execution Time: 6 ms
+---------------------------------
+A -> E -> D -> C -> A -> B -> C -> D -> A
