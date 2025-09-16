@@ -1,13 +1,9 @@
 package br.com.unifal.tcc.model.graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -15,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class Graph {
 
-  private final Map<String, Vertex> vertices;
+  private final Map<String, Vertex> vertices; // TODO: Check need for Map instead of Set
   private final Set<Edge> edges;
   private final boolean isDirected;
 
@@ -41,14 +37,6 @@ public class Graph {
     edges.add(edge);
   }
 
-  // TODO: Javadoc with complexity big o annotation
-  public Set<VirtualEdge> getVirtualEdges() {
-    return edges.stream()
-        .filter(edge -> edge instanceof VirtualEdge)
-        .map(edge -> (VirtualEdge) edge)
-        .collect(Collectors.toSet());
-  }
-
   /**
    * Adds a vertex to the graph if it does not exist.
    *
@@ -69,6 +57,34 @@ public class Graph {
     }
   }
 
+  /**
+   * Returns a set containing all vertices in the graph.
+   *
+   * <p>This method creates a new {@link HashSet} containing all vertex objects stored in the graph.
+   * Modifications to the returned set do not affect the original graph.
+   *
+   * @return a new {@link Set} containing all vertices in the graph
+   * @complexity O(V), where V is the number of vertices in the graph, since each vertex is copied
+   *     into the new set
+   */
+  public Set<Vertex> getVerticesSet() {
+    return new HashSet<>(vertices.values());
+  }
+
+  /**
+   * Retrieves the neighboring vertices of a given vertex along with the minimum edge weight for
+   * each connection.
+   *
+   * <p>If multiple edges exist between the same pair of vertices, only the edge with the smallest
+   * weight is included in the result.
+   *
+   * <p>For undirected graphs, both directions are considered, so edges pointing to the source are
+   * also included as neighbors.
+   *
+   * @param vertex the vertex whose neighbors are to be retrieved
+   * @return a map where the keys are the neighboring vertices and the values are the corresponding
+   *     minimum edge weights
+   */
   public Map<Vertex, Double> getNeighbors(Vertex vertex) {
     Map<Vertex, Double> neighbors = new HashMap<>();
     edges.forEach(
@@ -132,26 +148,11 @@ public class Graph {
   }
 
   /**
-   * Retrieves the minimum weight of edges between two vertices.
+   * Returns the total number of vertices in the graph.
    *
-   * <p>If the graph is undirected, edges in both directions (from→to and to→from) are considered.
-   * If no edge exists between the vertices, an empty {@link Optional} is returned.
-   *
-   * @param from the source vertex
-   * @param to the target vertex
-   * @return an {@link Optional} containing the minimum edge-weight if at least one edge exists, or
-   *     an empty {@link Optional} if no edge is found
+   * @return the number of vertices
    */
-  public Optional<Double> getEdgeWeight(Vertex from, Vertex to) {
-    List<Double> weights = new ArrayList<>();
-    for (Edge edge : getEdges()) {
-      if (edge.getSource().equals(from) && edge.getTarget().equals(to)) {
-        weights.add(edge.getWeight());
-      }
-      if (!isDirected() && edge.getTarget().equals(from) && edge.getSource().equals(to)) {
-        weights.add(edge.getWeight());
-      }
-    }
-    return weights.isEmpty() ? Optional.empty() : Optional.of(Collections.min(weights));
+  public int getVertexCount() {
+    return vertices.size();
   }
 }
