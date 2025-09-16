@@ -15,7 +15,6 @@ public class AlgorithmTest {
     Graph graph = createGraph();
     Set<Vertex> vertexSet = graph.getVerticesSet();
 
-    // Total number of comparisons: all pairs of distinct vertices
     int totalVertices = vertexSet.size();
     int totalComparisons = totalVertices * (totalVertices - 1);
     int comparisonCount = 0;
