@@ -86,45 +86,6 @@ public class CPPSolver {
     return circuit;
   }
 
-  private List<Vertex> expandVirtualEdges(List<Vertex> circuit) {
-    List<Vertex> expandedCircuit = new ArrayList<>();
-    Set<VirtualEdge> remainingVirtualEdges = graph.getVirtualEdges();
-
-    for (int i = 0; i < circuit.size() - 1; i++) {
-      Vertex from = circuit.get(i);
-      expandedCircuit.add(from);
-      Vertex to = circuit.get(i + 1);
-
-      Optional<VirtualEdge> optVirtualEdge = findVirtualEdge(from, to, remainingVirtualEdges);
-      if (optVirtualEdge.isPresent()) {
-        VirtualEdge virtualEdge = optVirtualEdge.get();
-        List<Vertex> hiddenPath = virtualEdge.getHiddenPath();
-        boolean forward = hiddenPath.get(0).equals(from);
-
-        // Add intermediate vertices (skip first and last)
-        if (forward) {
-          for (int j = 1; j < hiddenPath.size() - 1; j++) {
-            expandedCircuit.add(hiddenPath.get(j));
-          }
-        } else {
-          int ops = -1;
-        }
-      }
-    }
-  }
-
-  private Optional<VirtualEdge> findVirtualEdge(
-      Vertex from, Vertex to, Set<VirtualEdge> remainingEdges) {
-    return remainingEdges.stream()
-        .filter(
-            ve ->
-                (ve.getSource().equals(from) && ve.getTarget().equals(to))
-                    || (!graph.isDirected()
-                        && ve.getSource().equals(to)
-                        && ve.getTarget().equals(from)))
-        .findFirst();
-  }
-
   private void checkEulerianPath(List<Vertex> eulerianPath) {
     Vertex first = eulerianPath.get(0);
     Vertex last = eulerianPath.get(eulerianPath.size() - 1);
