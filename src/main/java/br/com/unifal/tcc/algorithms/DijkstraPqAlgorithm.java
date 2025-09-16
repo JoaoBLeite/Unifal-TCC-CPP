@@ -1,6 +1,7 @@
 package br.com.unifal.tcc.algorithms;
 
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
+import br.com.unifal.tcc.exceptions.UnreachableVertexException;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.results.PathResult;
@@ -73,8 +74,9 @@ public class DijkstraPqAlgorithm implements ShortestPathAlgorithm {
 
     // Check if end vertex is reachable
     if (distances.get(end) == Double.POSITIVE_INFINITY) {
-      throw new RuntimeException(
-          String.format("Target vertex with id: %s cannot be reachable!", end.getId()));
+      throw new UnreachableVertexException(
+          String.format(
+              "Target vertex with id: %s is not reachable from start vertex!", end.getId()));
     }
 
     // Reconstruct the path from end to start
