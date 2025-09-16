@@ -15,7 +15,7 @@ public class Graph {
   private final Set<Edge> edges;
   private final boolean isDirected;
 
-  public Graph(boolean isDirected) {
+  public Graph(boolean isDirected) { // TODO: Allow only directed graph
     this.isDirected = isDirected;
     this.vertices = new HashMap<>();
     this.edges = new HashSet<>();
