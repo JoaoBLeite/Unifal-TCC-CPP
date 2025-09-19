@@ -38,8 +38,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     frontier.add(start);
 
     // Calculate K based on graph (adaptive parameter)
-    int k =
-        Math.max(2, (int) Math.ceil(Math.log(vertexCount) / Math.log(2))); // TODO: Check this out
+    int k = Math.max(2, (int) Math.ceil(Math.log(vertexCount) / Math.log(2)));
 
     // Main loop
     while (!finished.contains(end) && !frontier.isEmpty()) {
@@ -155,8 +154,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     int hopCount = 0;
     Vertex currentVertex = vertex;
 
-    while (Objects.nonNull(currentVertex)
-        && hopCount <= maxHops) { // TODO: Do I need "hopCount <= maxHops" check here?
+    while (Objects.nonNull(currentVertex) && hopCount <= maxHops) {
       if (frontier.contains(currentVertex)) {
         return hopCount <= maxHops;
       }
@@ -179,7 +177,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
         Vertex neighbor = neighborEntry.getKey();
         if (!finished.contains(neighbor)) {
           newFrontierVertices.add(finishedVertex);
-          break; // TODO: Do I need to break loop here?
+          break;
         }
       }
     }
@@ -196,7 +194,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
       Set<Vertex> finished,
       Set<Vertex> remaining) {
 
-    if (remaining.isEmpty() || k <= 0) { // TODO: Check need for k<=0 validation
+    if (remaining.isEmpty() || k <= 0) {
       return;
     }
 
