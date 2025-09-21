@@ -19,6 +19,8 @@ public class AlgorithmTest {
     int totalComparisons = totalVertices * (totalVertices - 1);
     int comparisonCount = 0;
 
+    System.out.println(String.format("Starting %d tests:", totalComparisons));
+
     for (Vertex source : vertexSet) {
       for (Vertex target : vertexSet) {
 
@@ -42,7 +44,7 @@ public class AlgorithmTest {
       }
     }
 
-    System.out.println("\nAll comparisons completed.");
+    System.out.println("\nAll tests completed.");
   }
 
   private static Graph createGraph() {
