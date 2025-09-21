@@ -70,8 +70,6 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
           performRecursiveExploration(graph, frontier, result, 2, finished, remaining);
         }
       }
-
-      int debug = 1 + 2;
     } // end main loop
 
     return new PathResult(result.getPath(end), result.getCostTo(end));
