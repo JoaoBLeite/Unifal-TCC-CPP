@@ -28,6 +28,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
     // Initialize source
     result.setDistance(start, 0.0);
+    result.setPredecessor(start, null);
 
     // Set of finished vertices
     Set<Vertex> finished = new HashSet<>();
@@ -91,7 +92,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
     // Perform k rounds of relaxation
     for (int round = 0; round < k; round++) {
-      Map<Vertex, Double> roundUpdates = new HashMap<>();
+      Map<Vertex, Double> roundDistUpdates = new HashMap<>();
       Map<Vertex, Vertex> roundPredUpdates = new HashMap<>();
 
       // Relax edges from all vertices discovered so far
@@ -106,8 +107,8 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
         if (tentativeDistances.containsKey(currentVertex)) {
           double currentVertexDistance = tentativeDistances.get(currentVertex);
 
-          for (Map.Entry<Vertex, Double> neighborEntry :
-              graph.getNeighbors(currentVertex).entrySet()) {
+          Map<Vertex, Double> neighbors = graph.getNeighbors(currentVertex);
+          for (Map.Entry<Vertex, Double> neighborEntry : neighbors.entrySet()) {
 
             Vertex neighbor = neighborEntry.getKey();
             double newNeighborDistance = currentVertexDistance + neighborEntry.getValue();
@@ -116,7 +117,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
                 tentativeDistances.getOrDefault(neighbor, Double.POSITIVE_INFINITY);
 
             if (newNeighborDistance < currentNeighborDistance) {
-              roundUpdates.put(neighbor, newNeighborDistance);
+              roundDistUpdates.put(neighbor, newNeighborDistance);
               roundPredUpdates.put(neighbor, currentVertex);
             }
           }
@@ -124,7 +125,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
       }
 
       // Apply updates from this round
-      tentativeDistances.putAll(roundUpdates);
+      tentativeDistances.putAll(roundDistUpdates);
       tentativePredecessors.putAll(roundPredUpdates);
     }
 
