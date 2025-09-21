@@ -39,10 +39,10 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     frontier.add(start);
 
     // Calculate K based on graph (adaptive parameter)
-    int k = Math.max(2, (int) Math.ceil(Math.log(vertexCount) / Math.log(2)));
+    int k = 2;
 
     // Main loop
-    while (!finished.contains(end) && !frontier.isEmpty()) {
+    while (!frontier.isEmpty()) {
       Set<Vertex> newlyFinishedVertices =
           performBoundedRelaxation(graph, frontier, result, k, finished);
 
@@ -56,20 +56,22 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
       frontier = computeNewFrontier(graph, finished);
 
       // Recursive call for remaining unfinished vertices if needed
-      if (!finished.contains(end) && !frontier.isEmpty()) {
+      if (!frontier.isEmpty()) {
         Set<Vertex> remaining = new HashSet<>();
         for (Vertex vertex : graph.getVerticesSet()) {
-          if (!finished.contains(vertex) && result.getDistance(vertex) < Double.POSITIVE_INFINITY) {
+          if (!finished.contains(vertex)
+              && result.getDistance(vertex) == Double.POSITIVE_INFINITY) {
             remaining.add(vertex);
           }
         }
 
         if (!remaining.isEmpty()) {
           // Perform recursive exploration with smaller k
-          performRecursiveExploration(
-              graph, frontier, result, Math.max(1, k / 2), finished, remaining);
+          performRecursiveExploration(graph, frontier, result, 2, finished, remaining);
         }
       }
+
+      int debug = 1 + 2;
     } // end main loop
 
     return new PathResult(result.getPath(end), result.getCostTo(end));
@@ -77,94 +79,58 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
   private Set<Vertex> performBoundedRelaxation(
       Graph graph, Set<Vertex> frontier, ShortestPathResult result, int k, Set<Vertex> finished) {
-    Set<Vertex> newlyFinishedVertices = new HashSet<>();
 
-    Map<Vertex, Double> tentativeDistances = new HashMap<>();
-    Map<Vertex, Vertex> tentativePredecessors = new HashMap<>();
+    Set<Vertex> newlyFinishedVertices = new HashSet<>();
+    Map<Vertex, Double> reachableDistance = new HashMap<>();
+    Map<Vertex, Vertex> reachablePredecessor = new HashMap<>();
 
     // Initialize tentative distances with current known distances
     for (Vertex vertex : graph.getVerticesSet()) {
       if (result.getDistance(vertex) < Double.POSITIVE_INFINITY) {
-        tentativeDistances.put(vertex, result.getDistance(vertex));
-        tentativePredecessors.put(vertex, result.getPredecessor(vertex));
+        reachableDistance.put(vertex, result.getDistance(vertex));
+        reachablePredecessor.put(vertex, result.getPredecessor(vertex));
       }
     }
 
     // Perform k rounds of relaxation
     for (int round = 0; round < k; round++) {
-      Map<Vertex, Double> roundDistUpdates = new HashMap<>();
-      Map<Vertex, Vertex> roundPredUpdates = new HashMap<>();
 
       // Relax edges from all vertices discovered so far
       Set<Vertex> activeVerticesForRelaxation = new HashSet<>(frontier);
-      for (Vertex vertex : tentativeDistances.keySet()) {
-        if (!finished.contains(vertex)) {
-          activeVerticesForRelaxation.add(vertex);
-        }
+      for (Vertex vertex : reachableDistance.keySet()) {
+        activeVerticesForRelaxation.add(vertex);
       }
 
       for (Vertex currentVertex : activeVerticesForRelaxation) {
-        if (tentativeDistances.containsKey(currentVertex)) {
-          double currentVertexDistance = tentativeDistances.get(currentVertex);
+        if (reachableDistance.containsKey(currentVertex)) {
+          double currentVertexDistance = reachableDistance.get(currentVertex);
 
           Map<Vertex, Double> neighbors = graph.getNeighbors(currentVertex);
           for (Map.Entry<Vertex, Double> neighborEntry : neighbors.entrySet()) {
 
             Vertex neighbor = neighborEntry.getKey();
-            double newNeighborDistance = currentVertexDistance + neighborEntry.getValue();
 
+            double newNeighborDistance = currentVertexDistance + neighborEntry.getValue();
             double currentNeighborDistance =
-                tentativeDistances.getOrDefault(neighbor, Double.POSITIVE_INFINITY);
+                reachableDistance.getOrDefault(neighbor, Double.POSITIVE_INFINITY);
 
             if (newNeighborDistance < currentNeighborDistance) {
-              roundDistUpdates.put(neighbor, newNeighborDistance);
-              roundPredUpdates.put(neighbor, currentVertex);
+              newlyFinishedVertices.add(neighbor);
+              reachableDistance.put(neighbor, newNeighborDistance);
+              reachablePredecessor.put(neighbor, currentVertex);
             }
           }
         }
       }
+    } // end K rounds of relaxation
 
-      // Apply updates from this round
-      tentativeDistances.putAll(roundDistUpdates);
-      tentativePredecessors.putAll(roundPredUpdates);
-    }
-
-    // Determine which vertices can be marked as finished
-    // (vertices whose shortest path from frontier uses <= relaxationRounds hops)
-    for (Map.Entry<Vertex, Double> distanceEntry : tentativeDistances.entrySet()) {
-      Vertex vertex = distanceEntry.getKey();
-      double tentativeDistance = distanceEntry.getValue();
-
-      if (!finished.contains(vertex) && tentativeDistance < Double.POSITIVE_INFINITY) {
-        // Verify this is likely the shortest path by checking hop count
-        if (isLikelyShortestPath(vertex, tentativePredecessors, frontier, k)) {
-          result.setDistance(vertex, tentativeDistance);
-          result.setPredecessor(vertex, tentativePredecessors.getOrDefault(vertex, null));
-          newlyFinishedVertices.add(vertex);
-        }
-      }
+    // Apply relaxation
+    for (Vertex vertex : newlyFinishedVertices) {
+      result.setDistance(vertex, reachableDistance.get(vertex));
+      result.setPredecessor(vertex, reachablePredecessor.get(vertex));
     }
 
     return newlyFinishedVertices;
-  }
-
-  /** Heuristic to determine if a path is likely the shortest path within given hop limit */
-  private static boolean isLikelyShortestPath(
-      Vertex vertex, Map<Vertex, Vertex> predecessorMap, Set<Vertex> frontier, int maxHops) {
-
-    int hopCount = 0;
-    Vertex currentVertex = vertex;
-
-    while (Objects.nonNull(currentVertex) && hopCount <= maxHops) {
-      if (frontier.contains(currentVertex)) {
-        return hopCount <= maxHops;
-      }
-
-      currentVertex = predecessorMap.getOrDefault(currentVertex, null);
-      hopCount++;
-    }
-
-    return hopCount <= maxHops;
   }
 
   /** Computes new frontier: finished vertices that have edges to unfinished vertices */
@@ -172,11 +138,11 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     Set<Vertex> newFrontierVertices = new HashSet<>();
 
     for (Vertex finishedVertex : finished) {
-      for (Map.Entry<Vertex, Double> neighborEntry :
+      for (Map.Entry<Vertex, Double> finishedNeighborEntry :
           graph.getNeighbors(finishedVertex).entrySet()) {
 
-        Vertex neighbor = neighborEntry.getKey();
-        if (!finished.contains(neighbor)) {
+        Vertex finishedNeighbor = finishedNeighborEntry.getKey();
+        if (!finished.contains(finishedNeighbor)) {
           newFrontierVertices.add(finishedVertex);
           break;
         }

@@ -21,6 +21,7 @@ public class AlgorithmTest {
 
     for (Vertex source : vertexSet) {
       for (Vertex target : vertexSet) {
+
         if (!source.equals(target)) {
           comparisonCount++;
 
@@ -59,6 +60,8 @@ public class AlgorithmTest {
     graph.addEdge(new RealEdge(new Vertex("C"), new Vertex("H"), 10d));
     graph.addEdge(new RealEdge(new Vertex("I"), new Vertex("C"), 11d));
     graph.addEdge(new RealEdge(new Vertex("E"), new Vertex("C"), 12d));
+    graph.addEdge(new RealEdge(new Vertex("H"), new Vertex("F"), 14d));
+    graph.addEdge(new RealEdge(new Vertex("G"), new Vertex("F"), 15d));
     return graph;
   }
 }
