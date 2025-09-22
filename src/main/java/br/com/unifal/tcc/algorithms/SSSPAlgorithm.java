@@ -16,6 +16,8 @@ import java.util.Set;
 
 public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
+  private static final int K = 2;
+
   @Override
   public String getName() {
     return "SSSP-Algorithm";
@@ -23,8 +25,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
   @Override
   public PathResult findShortestPath(Graph graph, Vertex start, Vertex end) {
-    int vertexCount = graph.getVertexCount();
-    ShortestPathResult result = new ShortestPathResult(vertexCount);
+    ShortestPathResult result = new ShortestPathResult();
 
     // Initialize source
     result.setDistance(start, 0.0);
@@ -38,13 +39,9 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     Set<Vertex> frontier = new HashSet<>();
     frontier.add(start);
 
-    // Calculate K based on graph (adaptive parameter)
-    int k = 2;
-
     // Main loop
     while (!frontier.isEmpty()) {
-      Set<Vertex> newlyFinishedVertices =
-          performBoundedRelaxation(graph, frontier, result, k, finished);
+      Set<Vertex> newlyFinishedVertices = performBoundedRelaxation(graph, frontier, result);
 
       if (newlyFinishedVertices.isEmpty()) {
         break; // No more progress possible
@@ -67,7 +64,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
         if (!remaining.isEmpty()) {
           // Perform recursive exploration with smaller k
-          performRecursiveExploration(graph, frontier, result, 2, finished, remaining);
+          performRecursiveExploration(graph, frontier, result, finished, remaining);
         }
       }
     } // end main loop
@@ -76,9 +73,10 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
   }
 
   private Set<Vertex> performBoundedRelaxation(
-      Graph graph, Set<Vertex> frontier, ShortestPathResult result, int k, Set<Vertex> finished) {
+      Graph graph, Set<Vertex> frontier, ShortestPathResult result) {
 
     Set<Vertex> newlyFinishedVertices = new HashSet<>();
+
     Map<Vertex, Double> reachableDistance = new HashMap<>();
     Map<Vertex, Vertex> reachablePredecessor = new HashMap<>();
 
@@ -91,7 +89,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     }
 
     // Perform k rounds of relaxation
-    for (int round = 0; round < k; round++) {
+    for (int round = 0; round < K; round++) {
 
       // Relax edges from all vertices discovered so far
       Set<Vertex> activeVerticesForRelaxation = new HashSet<>(frontier);
@@ -155,22 +153,21 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
       Graph graph,
       Set<Vertex> frontier,
       ShortestPathResult result,
-      int k,
       Set<Vertex> finished,
       Set<Vertex> remaining) {
 
-    if (remaining.isEmpty() || k <= 0) {
+    if (remaining.isEmpty() || K <= 0) {
       return;
     }
 
-    Set<Vertex> newFinished = performBoundedRelaxation(graph, frontier, result, k, finished);
+    Set<Vertex> newFinished = performBoundedRelaxation(graph, frontier, result);
     finished.addAll(newFinished);
     remaining.removeAll(newFinished);
 
     if (!remaining.isEmpty()) {
       Set<Vertex> newFrontier = computeNewFrontier(graph, finished);
       if (!newFrontier.isEmpty()) {
-        performRecursiveExploration(graph, newFrontier, result, k, finished, remaining);
+        performRecursiveExploration(graph, newFrontier, result, finished, remaining);
       }
     }
   }
@@ -179,7 +176,7 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
     private HashMap<Vertex, Double> distances;
     private HashMap<Vertex, Vertex> predecessors;
 
-    public ShortestPathResult(int n) {
+    public ShortestPathResult() {
       this.distances = new HashMap<>();
       this.predecessors = new HashMap<>();
     }
