@@ -18,7 +18,7 @@ public class InputService {
 
     try (FileReader reader = new FileReader(graphFile)) {
       GraphInp graphInp = gson.fromJson(reader, GraphInp.class);
-      Graph graph = new Graph(graphInp.directed());
+      Graph graph = new Graph();
       graphInp
           .links()
           .forEach(

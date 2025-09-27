@@ -20,12 +20,8 @@ public class Vertex {
     this.degree += value;
   }
 
-  public boolean isNotBalanced(boolean isGraphDirected) {
-    if (isGraphDirected) {
-      return degree != 0;
-    } else {
-      return degree % 2 != 0;
-    }
+  public boolean isNotBalanced() {
+    return degree != 0;
   }
 
   @Override

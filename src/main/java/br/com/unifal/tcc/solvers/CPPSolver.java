@@ -43,9 +43,7 @@ public class CPPSolver {
     }
 
     List<BalancingEdge> matching =
-        (graph.isDirected())
-            ? MatchingService.findMinimumCostMatchingDirGraph(graph, pathAlgorithm)
-            : MatchingService.findMinimumCostMatchingNotDirGraph(graph, pathAlgorithm);
+        MatchingService.findMinimumCostMatchingDirGraph(graph, pathAlgorithm);
 
     for (BalancingEdge balancingEdge : matching) {
       addVirtualEdge(balancingEdge.pathResult());
@@ -127,8 +125,7 @@ public class CPPSolver {
 
   private Optional<Edge> findUnusedEdge(Vertex vertex, Set<Edge> remainingEdges) {
     for (Edge edge : remainingEdges) {
-      if (edge.getSource().equals(vertex)
-          || (!graph.isDirected() && edge.getTarget().equals(vertex))) {
+      if (edge.getSource().equals(vertex)) {
         return Optional.of(edge);
       }
     }
@@ -137,10 +134,7 @@ public class CPPSolver {
 
   private Optional<Edge> findUnusedEdge(Vertex from, Vertex to, Set<Edge> remainingEdges) {
     for (Edge edge : remainingEdges) {
-      if ((edge.getSource().equals(from) && edge.getTarget().equals(to))
-          || (!graph.isDirected()
-              && edge.getTarget().equals(from)
-              && edge.getSource().equals(to))) {
+      if ((edge.getSource().equals(from) && edge.getTarget().equals(to))) {
         return Optional.of(edge);
       }
     }

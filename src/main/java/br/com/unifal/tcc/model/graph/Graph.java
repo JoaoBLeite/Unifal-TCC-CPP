@@ -13,10 +13,8 @@ public class Graph {
 
   private final Map<String, Vertex> vertices; // TODO: Check need for Map instead of Set
   private final Set<Edge> edges;
-  private final boolean isDirected;
 
-  public Graph(boolean isDirected) { // TODO: Allow only directed graph
-    this.isDirected = isDirected;
+  public Graph() {
     this.vertices = new HashMap<>();
     this.edges = new HashSet<>();
   }
@@ -25,14 +23,14 @@ public class Graph {
    * Adds an edge to the graph.
    *
    * <p>If the source or target vertices do not exist in the graph, they are added. Updates the
-   * degree of the vertices according to the edge and graph type (directed or undirected).
+   * degree of the vertices.
    *
    * @param edge the edge to add
    * @complexity O(1) amortized for vertex lookup and O(1) to add to the edges set → overall O(1)
    *     amortized
    */
   public void addEdge(Edge edge) {
-    addVertex(edge.getSource(), isDirected ? -1 : 1);
+    addVertex(edge.getSource(), -1);
     addVertex(edge.getTarget(), 1);
     edges.add(edge);
   }
@@ -78,9 +76,6 @@ public class Graph {
    * <p>If multiple edges exist between the same pair of vertices, only the edge with the smallest
    * weight is included in the result.
    *
-   * <p>For undirected graphs, both directions are considered, so edges pointing to the source are
-   * also included as neighbors.
-   *
    * @param vertex the vertex whose neighbors are to be retrieved
    * @return a map where the keys are the neighboring vertices and the values are the corresponding
    *     minimum edge weights
@@ -100,17 +95,6 @@ public class Graph {
               neighbors.put(edge.getTarget(), edge.getWeight());
             }
           }
-          if (!isDirected && vertex.equals(edge.getTarget())) {
-            if (!neighbors.containsKey(edge.getSource())) {
-              // Add
-              neighbors.put(edge.getSource(), edge.getWeight());
-            }
-            if (neighbors.containsKey(edge.getSource())
-                && edge.getWeight() < neighbors.get(edge.getSource())) {
-              // Update
-              neighbors.put(edge.getSource(), edge.getWeight());
-            }
-          }
         });
     return neighbors;
   }
@@ -118,16 +102,14 @@ public class Graph {
   /**
    * Returns all vertices that are unbalanced.
    *
-   * <p>A vertex is unbalanced if its degree is odd (for undirected graphs) or does not satisfy the
-   * Eulerian condition (for directed graphs) according to {@link Vertex#isNotBalanced(boolean)}.
+   * <p>A vertex is unbalanced if it does not satisfy the Eulerian condition according to {@link
+   * Vertex#isNotBalanced()}.
    *
    * @return a set of unbalanced vertices
    * @complexity O(v) – iterates through all vertices
    */
   public Set<Vertex> getUnbalancedVertices() {
-    return vertices.values().stream()
-        .filter(vertex -> vertex.isNotBalanced(isDirected))
-        .collect(Collectors.toSet());
+    return vertices.values().stream().filter(Vertex::isNotBalanced).collect(Collectors.toSet());
   }
 
   /**
@@ -145,14 +127,5 @@ public class Graph {
    */
   public boolean isEulerian() {
     return getUnbalancedVertices().isEmpty();
-  }
-
-  /**
-   * Returns the total number of vertices in the graph.
-   *
-   * @return the number of vertices
-   */
-  public int getVertexCount() {
-    return vertices.size();
   }
 }
