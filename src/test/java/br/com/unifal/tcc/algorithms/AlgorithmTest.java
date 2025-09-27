@@ -1,48 +1,54 @@
 package br.com.unifal.tcc.algorithms;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
 import br.com.unifal.tcc.fixtures.model.graph.GraphFixture;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.results.PathResult;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AlgorithmTest {
-  private static final ShortestPathAlgorithm ssspAlgorithm = new SSSPAlgorithm();
-  private static final ShortestPathAlgorithm dijkstraPqAlgorithm = new DijkstraPqAlgorithm();
 
-  public static void main(String[] args) {
-    Graph graph = GraphFixture.getGraphFixture();
+  private static ShortestPathAlgorithm ssspAlgorithm;
+  private static ShortestPathAlgorithm dijkstraPqAlgorithm;
+
+  private Graph graph;
+
+  @BeforeAll
+  static void setupAll() {
+    ssspAlgorithm = new SSSPAlgorithm();
+    dijkstraPqAlgorithm = new DijkstraPqAlgorithm();
+  }
+
+  @BeforeEach
+  void setupEach() {
+    graph = GraphFixture.getGraphFixture();
+  }
+
+  @Test
+  void givenSsspAndDijkstraAlgorithm_whenSearchShortestPath_thenMustReturnSamePath() {
     Set<Vertex> vertexSet = graph.getVerticesSet();
-
-    int totalVertices = vertexSet.size();
-    int totalComparisons = totalVertices * (totalVertices - 1);
-    int comparisonCount = 0;
-
-    System.out.printf("Starting %d tests:\n", totalComparisons);
 
     for (Vertex source : vertexSet) {
       for (Vertex target : vertexSet) {
-
         if (!source.equals(target)) {
-          comparisonCount++;
-
           PathResult ssspResult = ssspAlgorithm.findShortestPath(graph, source, target);
           PathResult dijkstraResult = dijkstraPqAlgorithm.findShortestPath(graph, source, target);
 
-          // Calculate and print progress percentage
-          double progress = (comparisonCount * 100.0) / totalComparisons;
-          System.out.printf("Progress: %.2f%%\r", progress);
-
-          if (!ssspResult.equals(dijkstraResult)) {
-            System.out.printf(
-                "Source ID: %s | Target ID: %s | SSSP cost: %f | Dijkstra cost: %f\n",
-                source.getId(), target.getId(), ssspResult.cost(), dijkstraResult.cost());
-          }
+          assertEquals(
+              dijkstraResult,
+              ssspResult,
+              () ->
+                  String.format(
+                      "Mismatch! Source: %s | Target: %s | SSSP cost: %f | Dijkstra cost: %f",
+                      source.getId(), target.getId(), ssspResult.cost(), dijkstraResult.cost()));
         }
       }
     }
-
-    System.out.println("\nAll tests completed.");
   }
 }
