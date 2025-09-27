@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class Graph {
 
-  private final Map<String, Vertex> vertices; // TODO: Check need for Map instead of Set
+  private final Map<String, Vertex> vertices;
   private final Set<Edge> edges;
 
   public Graph() {
