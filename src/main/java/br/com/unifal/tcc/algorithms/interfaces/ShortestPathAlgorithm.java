@@ -1,7 +1,7 @@
 package br.com.unifal.tcc.algorithms.interfaces;
 
 import java.util.Map;
-import br.com.unifal.tcc.exceptions.UnreachableVertexException;
+import br.com.unifal.tcc.algorithms.exceptions.UnreachableVertexException;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.dto.PathResult;

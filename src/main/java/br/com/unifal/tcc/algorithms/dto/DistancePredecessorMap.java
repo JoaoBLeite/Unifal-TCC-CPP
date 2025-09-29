@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import br.com.unifal.tcc.exceptions.UnreachableVertexException;
+import br.com.unifal.tcc.algorithms.exceptions.UnreachableVertexException;
 import br.com.unifal.tcc.model.graph.Vertex;
 import lombok.Getter;
 
