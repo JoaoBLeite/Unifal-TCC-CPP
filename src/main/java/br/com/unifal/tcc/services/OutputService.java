@@ -1,7 +1,7 @@
 package br.com.unifal.tcc.services;
 
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
-import br.com.unifal.tcc.model.results.CPPSolution;
+import br.com.unifal.tcc.model.dto.CPPSolution;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

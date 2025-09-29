@@ -1,4 +1,4 @@
-package br.com.unifal.tcc.model.results;
+package br.com.unifal.tcc.model.dto;
 
 import br.com.unifal.tcc.model.graph.Vertex;
 import java.util.List;

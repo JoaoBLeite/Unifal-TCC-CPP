@@ -1,4 +1,4 @@
-package br.com.unifal.tcc.model.dto;
+package br.com.unifal.tcc.algorithms.dto;
 
 import java.util.ArrayList;
 import java.util.Collections;

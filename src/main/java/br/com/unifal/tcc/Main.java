@@ -4,7 +4,7 @@ import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
 import br.com.unifal.tcc.configurations.ParametersConfig;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
-import br.com.unifal.tcc.model.results.CPPSolution;
+import br.com.unifal.tcc.model.dto.CPPSolution;
 import br.com.unifal.tcc.services.InputService;
 import br.com.unifal.tcc.services.OutputService;
 import br.com.unifal.tcc.solvers.CPPSolver;

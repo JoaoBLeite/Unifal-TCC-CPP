@@ -4,7 +4,7 @@ import java.util.Map;
 import br.com.unifal.tcc.exceptions.UnreachableVertexException;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
-import br.com.unifal.tcc.model.results.PathResult;
+import br.com.unifal.tcc.model.dto.PathResult;
 
 public interface ShortestPathAlgorithm {
     /**

@@ -1,6 +1,6 @@
 package br.com.unifal.tcc.model.graph;
 
-import br.com.unifal.tcc.model.results.PathResult;
+import br.com.unifal.tcc.model.dto.PathResult;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

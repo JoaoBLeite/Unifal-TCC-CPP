@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
-import br.com.unifal.tcc.model.dto.DistancePredecessorMap;
+import br.com.unifal.tcc.algorithms.dto.DistancePredecessorMap;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
-import br.com.unifal.tcc.model.results.PathResult;
+import br.com.unifal.tcc.model.dto.PathResult;
 
 public class DijkstraPqAlgorithm implements ShortestPathAlgorithm {
 
