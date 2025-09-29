@@ -1,14 +1,12 @@
 package br.com.unifal.tcc.services;
 
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
-import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.results.CPPSolution;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.List;
 
 public class OutputService {
 
@@ -44,16 +42,11 @@ public class OutputService {
       // Metadata
       writer.write("---------------------------------\n");
       writer.write("Algorithm: " + solution.pathAlgorithm().getName() + "\n");
+      writer.write("Path size: " + solution.path().size() + "\n");
       writer.write("Total Cost: " + solution.totalCost() + "\n");
       writer.write("Execution Time: " + duration.toMillis() + " ms\n");
       writer.write("---------------------------------\n");
 
-      // Solution
-      List<Vertex> path = solution.path();
-      for (int i = 0; i < path.size(); i++) {
-        writer.write(path.get(i).getId());
-        if (i < path.size() - 1) writer.write(" -> ");
-      }
     } catch (IOException e) {
       System.err.println("Error writing solution to output file. Error: " + e.getMessage());
     }
