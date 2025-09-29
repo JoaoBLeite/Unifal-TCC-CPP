@@ -7,6 +7,7 @@ import br.com.unifal.tcc.fixtures.model.graph.GraphFixture;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.results.PathResult;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,19 @@ public class AlgorithmTest {
                       source.getId(), target.getId(), ssspResult.cost(), dijkstraResult.cost()));
         }
       }
+    }
+  }
+
+  @Test
+  void givenSsspAndDijkstraAlgorithm_whenGetDistanceMap_thenMustReturnSameMap() {
+    Set<Vertex> vertexSet = graph.getVerticesSet();
+
+    for (Vertex source : vertexSet) {
+      Map<Vertex, Double> ssspMap = ssspAlgorithm.getDistanceMap(graph, source);
+      Map<Vertex, Double> dijkstraMap = dijkstraPqAlgorithm.getDistanceMap(graph, source);
+
+      assertEquals(
+          dijkstraMap, ssspMap, () -> String.format("Mismatch! Source: %s ", source.getId()));
     }
   }
 }
