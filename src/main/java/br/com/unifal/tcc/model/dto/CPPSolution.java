@@ -17,6 +17,6 @@ public record CPPSolution(
 
   @Override
   public int hashCode() {
-    return Objects.hash(pathAlgorithm(), path(), totalCost());
+    return Objects.hash(path(), totalCost());
   }
 }
