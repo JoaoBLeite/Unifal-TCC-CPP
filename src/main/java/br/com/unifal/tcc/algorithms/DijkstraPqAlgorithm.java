@@ -1,114 +1,84 @@
 package br.com.unifal.tcc.algorithms;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
-import br.com.unifal.tcc.exceptions.UnreachableVertexException;
+import br.com.unifal.tcc.model.dto.DistancePredecessorMap;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
 import br.com.unifal.tcc.model.results.PathResult;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 public class DijkstraPqAlgorithm implements ShortestPathAlgorithm {
 
-  @Override
-  public String getName() {
-    return "Dijkstra-PriorityQueue-Algorithm";
-  }
-
-  @Override
-  public PathResult findShortestPath(Graph graph, Vertex start, Vertex end) {
-    Map<Vertex, Double> distances = new HashMap<>();
-    Map<Vertex, Vertex> previous = new HashMap<>();
-    PriorityQueue<VertexDistance> pq =
-        new PriorityQueue<>(Comparator.comparingDouble(VertexDistance::distance));
-    Set<Vertex> visited = new HashSet<>();
-
-    // Initialize distances to infinity for all vertices except start
-    for (Vertex vertex : graph.getVertices().values()) {
-      distances.put(vertex, vertex.equals(start) ? 0.0 : Double.POSITIVE_INFINITY);
+    @Override
+    public String getName() {
+        return "Dijkstra-PriorityQueue-Algorithm";
     }
-    pq.offer(new VertexDistance(start, 0.0));
 
-    while (!pq.isEmpty()) {
-      VertexDistance current = pq.poll();
-      Vertex currentVertex = current.vertex;
+    @Override
+    public PathResult findShortestPath(Graph graph, Vertex start, Vertex end) {
+        DistancePredecessorMap result = computeDistancePredecessorMap(graph, start);
+        return new PathResult(result.getPath(end), result.getPathCostTo(end));
+    }
 
-      // Skip if we've processed this vertex
-      if (visited.contains(currentVertex)) {
-        continue;
-      }
+    @Override
+    public Map<Vertex, Double> getDistanceMap(Graph graph, Vertex source) {
+        return computeDistancePredecessorMap(graph, source).getDistances();
+    }
 
-      // Check if we've reached the target vertex
-      if (currentVertex.equals(end)) {
-        break;
-      }
+    /**
+     * Runs Dijkstra's algorithm and builds a {@link DistancePredecessorMap} from the given source.
+     */
+    private DistancePredecessorMap computeDistancePredecessorMap(Graph graph, Vertex source) {
+        DistancePredecessorMap result = new DistancePredecessorMap();
 
-      visited.add(currentVertex);
+        PriorityQueue<VertexDistance> pq =
+                new PriorityQueue<>(Comparator.comparingDouble(VertexDistance::distance));
+        Set<Vertex> visited = new HashSet<>();
 
-      // Check all neighbors
-      Map<Vertex, Double> neighborsDistances = graph.getNeighbors(currentVertex);
-      neighborsDistances.forEach(
-          (neighbor, cost) -> {
-            if (visited.contains(neighbor)) {
-              return;
+        // Initialize source
+        result.setDistance(source, 0.0);
+        result.setPredecessor(source, null);
+
+        // Initialize distances
+        pq.offer(new VertexDistance(source, result.getDistance(source)));
+
+        while (!pq.isEmpty()) {
+            VertexDistance current = pq.poll();
+            Vertex currentVertex = current.vertex;
+
+            if (visited.contains(currentVertex)) {
+                continue;
             }
 
-            double newDistance = distances.get(currentVertex) + cost;
+            visited.add(currentVertex);
 
-            // If we found a shorter path, update it
-            if (newDistance < distances.get(neighbor)) {
-              distances.put(neighbor, newDistance);
-              previous.put(neighbor, currentVertex);
-              pq.offer(new VertexDistance(neighbor, newDistance));
-            }
-          });
+            // Explore neighbors
+            Map<Vertex, Double> neighbors = graph.getNeighbors(currentVertex);
+            neighbors.forEach((neighbor, cost) -> {
+                if (visited.contains(neighbor)) {
+                    return;
+                }
+
+                double newDistance = result.getDistance(currentVertex) + cost;
+
+                if (newDistance < result.getDistance(neighbor)) {
+                    result.setDistance(neighbor, newDistance);
+                    result.setPredecessor(neighbor, currentVertex);
+                    pq.offer(new VertexDistance(neighbor, newDistance));
+                }
+            });
+        }
+
+        return result;
     }
 
-    // Check if end vertex is reachable
-    if (distances.get(end) == Double.POSITIVE_INFINITY) {
-      throw new UnreachableVertexException(
-          String.format(
-              "Target vertex with id: %s is not reachable from start vertex!", end.getId()));
+    /**
+     * Helper record to store vertex-distance pairs for the priority queue.
+     */
+    private record VertexDistance(Vertex vertex, double distance) {
     }
-
-    // Reconstruct the path from end to start
-    List<Vertex> path = reconstructPath(previous, start, end);
-    double totalCost = distances.get(end);
-
-    return new PathResult(path, totalCost);
-  }
-
-  /** Reconstructs the shortest path from start to end using the previous vertex map. */
-  private List<Vertex> reconstructPath(Map<Vertex, Vertex> previous, Vertex start, Vertex end) {
-    List<Vertex> path = new ArrayList<>();
-    Vertex current = end;
-
-    // Build the path backwards from end to start
-    while (Objects.nonNull(current)) {
-      path.add(current);
-      current = previous.get(current);
-    }
-
-    // Reverse to get the path from start to end
-    Collections.reverse(path);
-
-    // Verify that the path actually starts with the start vertex
-    if (!path.isEmpty() && path.get(0).equals(start)) {
-      return path;
-    } else {
-      // No valid path found
-      return Collections.emptyList();
-    }
-  }
-
-  /** Helper record to store vertex-distance pairs for the priority queue. */
-  private record VertexDistance(Vertex vertex, double distance) {}
 }
