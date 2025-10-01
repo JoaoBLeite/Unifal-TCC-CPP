@@ -12,7 +12,7 @@ import br.com.unifal.tcc.services.OutputService;
 import br.com.unifal.tcc.services.dto.TimedResult;
 import br.com.unifal.tcc.solvers.CPPSolver;
 
-public class Main {
+public class CppMain {
   public static void main(String[] args) {
     ParametersConfig params = new ParametersConfig(args);
 
@@ -24,10 +24,7 @@ public class Main {
     CPPSolver solver = new CPPSolver(graph, pathAlgorithm);
 
     TimedResult<CPPSolution> timedSolution =
-        measureTimeWithResult(
-            () -> {
-              return solver.solve(new Vertex("A"));
-            }); // TODO
+        measureTimeWithResult(() -> solver.solve(new Vertex("A"))); // TODO
 
     // Export output
     OutputService.exportResultFile(

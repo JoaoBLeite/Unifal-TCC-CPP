@@ -76,7 +76,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>br.com.unifal.tcc.Main</mainClass>
+                            <mainClass>br.com.unifal.tcc.CppMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

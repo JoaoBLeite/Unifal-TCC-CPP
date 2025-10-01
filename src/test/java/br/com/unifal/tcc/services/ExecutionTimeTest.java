@@ -45,21 +45,11 @@ public class ExecutionTimeTest {
 
     for (Vertex source : vertexSet) {
 
-      var timedSsspMap =
-          measureTimeWithResult(
-              () -> {
-                return ssspAlgorithm.getDistanceMap(graph, source);
-              });
+      var timedSsspMap = measureTimeWithResult(() -> ssspAlgorithm.getDistanceMap(graph, source));
       var timedDijkstraPqMap =
-          measureTimeWithResult(
-              () -> {
-                return dijkstraPqAlgorithm.getDistanceMap(graph, source);
-              });
+          measureTimeWithResult(() -> dijkstraPqAlgorithm.getDistanceMap(graph, source));
       var timedDijkstraListMap =
-          measureTimeWithResult(
-              () -> {
-                return dijkstraListAlgorithm.getDistanceMap(graph, source);
-              });
+          measureTimeWithResult(() -> dijkstraListAlgorithm.getDistanceMap(graph, source));
 
       // Guarantee same result
       Set<Map<Vertex, Double>> results = new HashSet<>();
