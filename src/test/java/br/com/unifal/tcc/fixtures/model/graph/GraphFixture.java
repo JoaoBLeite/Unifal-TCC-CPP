@@ -60,4 +60,16 @@ public class GraphFixture {
     graph.addEdge(new RealEdge(new Vertex("M"), new Vertex("Q"), 48d)); 
     return graph;
   }
+
+  public static Graph getGraphFixtureV2() {
+    Graph graph = new Graph();
+    graph.addEdge(new RealEdge(new Vertex("A"), new Vertex("B"), 1));
+    graph.addEdge(new RealEdge(new Vertex("B"), new Vertex("C"), 2));
+    graph.addEdge(new RealEdge(new Vertex("C"), new Vertex("D"), 3));
+    graph.addEdge(new RealEdge(new Vertex("D"), new Vertex("C"), 4));
+    graph.addEdge(new RealEdge(new Vertex("C"), new Vertex("A"), 5));
+    graph.addEdge(new RealEdge(new Vertex("A"), new Vertex("E"), 6));
+    graph.addEdge(new RealEdge(new Vertex("E"), new Vertex("D"), 7));
+    return graph;
+  }
 }

@@ -1,10 +1,10 @@
 package br.com.unifal.tcc.algorithms;
 
-import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
 import br.com.unifal.tcc.algorithms.dto.DistancePredecessorMap;
+import br.com.unifal.tcc.algorithms.interfaces.ShortestPathAlgorithm;
+import br.com.unifal.tcc.model.dto.PathResult;
 import br.com.unifal.tcc.model.graph.Graph;
 import br.com.unifal.tcc.model.graph.Vertex;
-import br.com.unifal.tcc.model.dto.PathResult;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class SSSPAlgorithm implements ShortestPathAlgorithm {
 
-    private static final int K = 2;
+    private static final int K = 4;
 
     @Override
     public String getName() {
@@ -101,12 +101,17 @@ public class SSSPAlgorithm implements ShortestPathAlgorithm {
             }
         }
 
+        // Relax edges from all vertices discovered so far
+        Set<Vertex> activeVerticesForRelaxation = new HashSet<>(frontier);
+        for (Vertex vertex : reachableDistance.keySet()) {
+            activeVerticesForRelaxation.add(vertex);
+        }
+
         // Perform k rounds of relaxation
         for (int round = 0; round < K; round++) {
 
             // Relax edges from all vertices discovered so far
-            Set<Vertex> activeVerticesForRelaxation = new HashSet<>(frontier);
-            for (Vertex vertex : reachableDistance.keySet()) {
+            for (Vertex vertex: newlyFinishedVertices) {
                 activeVerticesForRelaxation.add(vertex);
             }
 

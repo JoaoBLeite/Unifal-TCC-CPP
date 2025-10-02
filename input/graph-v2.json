@@ -1,24 +1,4 @@
 {
-  "directed": true,
-  "multigraph": false,
-  "graph": {},
-  "nodes": [
-    {
-      "id": "A"
-    },
-    {
-      "id": "B"
-    },
-    {
-      "id": "C"
-    },
-    {
-      "id": "D"
-    },
-    {
-      "id": "E"
-    }
-  ],
   "links": [
     {
       "weight": 1,
