@@ -98,7 +98,7 @@ public class ShortestDistancesMain {
       tierB.put(regularAlgorithm.getKey(), tierB.get(regularAlgorithm.getKey()) + 1);
 
       Map.Entry<ShortestPathAlgorithm, Duration> slowestAlgorithm = sortedDurations.get(2);
-      tierC.put(slowestAlgorithm.getKey(), tierB.get(slowestAlgorithm.getKey()) + 1);
+      tierC.put(slowestAlgorithm.getKey(), tierC.get(slowestAlgorithm.getKey()) + 1);
 
       // Calculate and print progress percentage
       double progress = (++vertexCount * 100.0) / verticesAmount;
